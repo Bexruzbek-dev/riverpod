@@ -22,7 +22,7 @@ class TodosScreen extends StatelessWidget {
               final todo = notifier.todos[index];
               return ListTile(
                 title: Text(todo.title),
-                subtitle: Text('Date: ${todo.dateTime}'),
+                subtitle: Text('Date: ${todo.date}'),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [

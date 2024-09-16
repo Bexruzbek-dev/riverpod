@@ -1,49 +1,31 @@
-import 'dart:convert';
-
 class Todo {
-  String id;
-  String title;
-  DateTime dateTime;
-  bool isDone;
+  final String id;
+  final String title;
+  final DateTime date;  // `DateTime` type for date
+  final bool isDone;
 
   Todo({
     required this.id,
     required this.title,
-    required this.dateTime,
+    required this.date,
     required this.isDone,
   });
 
-  factory Todo.fromMap(Map<String, dynamic> json) {
-    return Todo(
-      id: json['id'] as String,
-      title: json['title'] as String,
-      dateTime: DateTime.parse(json['DATETIME'] as String),
-      isDone: json['isDone'] as bool,
-    );
-  }
-
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
+    return {
       'id': id,
       'title': title,
-      'DATETIME': dateTime.toIso8601String(),
-      'isDone': isDone,
+      'date': date.toIso8601String().split('T')[0],  // Store only date part
+      'isDone': isDone ? 1 : 0,  // SQLite uses 0/1 for booleans
     };
   }
 
-  String toJson() => json.encode(toMap());
-
-  Todo copyWith({
-    String? id,
-    String? title,
-    DateTime? dateTime,
-    bool? isDone,
-  }) {
+  static Todo fromMap(Map<String, dynamic> map) {
     return Todo(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      dateTime: dateTime ?? this.dateTime,
-      isDone: isDone ?? this.isDone,
+      id: map['id'],
+      title: map['title'],
+      date: DateTime.parse(map['date']),  // Parse stored date string
+      isDone: map['isDone'] == 1,
     );
   }
 }

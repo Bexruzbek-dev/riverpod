@@ -13,51 +13,61 @@ class EditTodoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Initialize the text fields with the current values
     _titleController.text = todo.title;
-    _dateController.text = todo.dateTime.toString();
+    _dateController.text = todo.date.toIso8601String(); // Using ISO format
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Todo'),
+        title: const Text('Edit Todo'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            // Title input field
             TextField(
               controller: _titleController,
-              decoration: InputDecoration(labelText: 'Title'),
+              decoration: const InputDecoration(labelText: 'Title'),
             ),
+            const SizedBox(height: 16),
+            // Date input field
             TextField(
               controller: _dateController,
-              decoration: InputDecoration(labelText: 'Date'),
+              decoration: const InputDecoration(labelText: 'Date'),
+              readOnly: true, // Prevent manual editing of the date
               onTap: () async {
+                // Open a date picker
                 DateTime? pickedDate = await showDatePicker(
                   context: context,
-                  initialDate: todo.dateTime,
+                  initialDate: todo.date,
                   firstDate: DateTime(2000),
                   lastDate: DateTime(2100),
                 );
                 if (pickedDate != null) {
-                  _dateController.text = pickedDate.toIso8601String();
+                  _dateController.text = pickedDate.toIso8601String(); // Format the date
                 }
               },
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
+            // Button to update the todo
             ElevatedButton(
               onPressed: () {
+                // Create an updated Todo object
                 Todo updatedTodo = Todo(
-                  id: todo.id,
+                  id: todo.id, // Keep the original ID
                   title: _titleController.text,
-                  dateTime: DateTime.parse(_dateController.text),
-                  isDone: todo.isDone,
+                  date: DateTime.parse(_dateController.text), // Parse the selected date
+                  isDone: todo.isDone, // Keep the original done status
                 );
 
-                Provider.of<TodosNotifier>(context, listen: false)
-                    .editTodo(updatedTodo);
+                // Update the todo in the provider
+                context.read<TodosNotifier>().editTodo(updatedTodo);
+
+                // Navigate back after saving the changes
                 Navigator.of(context).pop();
               },
-              child: Text('Update Todo'),
+              child: const Text('Update Todo'),
             ),
           ],
         ),

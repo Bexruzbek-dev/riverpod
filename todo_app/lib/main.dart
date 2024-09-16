@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_app/database/sqf.dart';
 import 'package:todo_app/providers/todos_provider.dart';
 import 'package:todo_app/screens/todo_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await DatabaseHelper().database;
   runApp(MyApp());
 }
 
